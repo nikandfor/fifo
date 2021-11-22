@@ -45,6 +45,8 @@ func TestFIFO(t *testing.T) {
 }
 
 func BenchmarkFIFOPush(b *testing.B) {
+	b.ReportAllocs()
+
 	q := New[int](1 << 10)
 
 	for i := 0; i < b.N; i++ {
@@ -53,6 +55,8 @@ func BenchmarkFIFOPush(b *testing.B) {
 }
 
 func BenchmarkFIFOPop(b *testing.B) {
+	b.ReportAllocs()
+
 	q := New[int](1 << 10)
 
 	for i := 0; i < b.N; i++ {
@@ -67,6 +71,8 @@ func BenchmarkFIFOPop(b *testing.B) {
 }
 
 func BenchmarkFIFO10Cycles(b *testing.B) {
+	b.ReportAllocs()
+
 	const M = 10
 
 	q := New[int](1 << 10)

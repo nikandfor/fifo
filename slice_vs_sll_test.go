@@ -3,7 +3,6 @@ package fifo
 import (
 	"fmt"
 	"runtime"
-	"sync"
 	"testing"
 	"time"
 )
@@ -27,24 +26,24 @@ func bToMb(b uint64) uint64 {
 }
 
 type QueueSlice struct {
-	lock sync.Mutex // you don't have to do this if you don't want thread safety
-	s    []int
+	//	lock sync.Mutex // you don't have to do this if you don't want thread safety
+	s []int
 }
 
 func NewQueueSlice() *QueueSlice {
-	return &QueueSlice{sync.Mutex{}, make([]int, 0)}
+	return &QueueSlice{}
 }
 
 func (s *QueueSlice) Push(v int) {
-	s.lock.Lock()
-	defer s.lock.Unlock()
+	//	s.lock.Lock()
+	//	defer s.lock.Unlock()
 
 	s.s = append(s.s, v)
 }
 
 func (s *QueueSlice) Pop() int {
-	s.lock.Lock()
-	defer s.lock.Unlock()
+	//	s.lock.Lock()
+	//	defer s.lock.Unlock()
 
 	l := len(s.s)
 	if l == 0 {
@@ -102,6 +101,8 @@ func TestQueueSliceLocal(t *testing.T) {
 */
 
 func BenchmarkQueueSlicePush(b *testing.B) {
+	b.ReportAllocs()
+
 	q := NewQueueSlice()
 
 	for i := 0; i < b.N; i++ {
@@ -110,6 +111,8 @@ func BenchmarkQueueSlicePush(b *testing.B) {
 }
 
 func BenchmarkQueueSlicePop(b *testing.B) {
+	b.ReportAllocs()
+
 	q := NewQueueSlice()
 
 	for i := 0; i < b.N; i++ {
@@ -124,6 +127,8 @@ func BenchmarkQueueSlicePop(b *testing.B) {
 }
 
 func BenchmarkQueueSlice10Cycles(b *testing.B) {
+	b.ReportAllocs()
+
 	const M = 10
 
 	q := NewQueueSlice()
@@ -159,24 +164,24 @@ type QueueSll struct {
 	head  *node
 	tail  *node
 	count int
-	lock  *sync.Mutex
+	//	lock  *sync.Mutex
 }
 
 func NewQueueSll() *QueueSll {
 	q := &QueueSll{}
-	q.lock = &sync.Mutex{}
+	//	q.lock = &sync.Mutex{}
 	return q
 }
 
 func (q *QueueSll) Len() int {
-	q.lock.Lock()
-	defer q.lock.Unlock()
+	//	q.lock.Lock()
+	//	defer q.lock.Unlock()
 	return q.count
 }
 
 func (q *QueueSll) Push(item int) {
-	q.lock.Lock()
-	defer q.lock.Unlock()
+	//	q.lock.Lock()
+	//	defer q.lock.Unlock()
 
 	n := &node{data: item}
 
@@ -191,8 +196,8 @@ func (q *QueueSll) Push(item int) {
 }
 
 func (q *QueueSll) Pop() int {
-	q.lock.Lock()
-	defer q.lock.Unlock()
+	//	q.lock.Lock()
+	//	defer q.lock.Unlock()
 
 	if q.head == nil {
 		return 0
@@ -210,8 +215,8 @@ func (q *QueueSll) Pop() int {
 }
 
 func (q *QueueSll) Peek() int {
-	q.lock.Lock()
-	defer q.lock.Unlock()
+	//	q.lock.Lock()
+	//	defer q.lock.Unlock()
 
 	n := q.head
 	if n == nil {
@@ -258,6 +263,8 @@ func TestQueueSllLocal(t *testing.T) {
 */
 
 func BenchmarkQueueSllPush(b *testing.B) {
+	b.ReportAllocs()
+
 	q := NewQueueSll()
 
 	for i := 0; i < b.N; i++ {
@@ -266,6 +273,8 @@ func BenchmarkQueueSllPush(b *testing.B) {
 }
 
 func BenchmarkQueueSllPop(b *testing.B) {
+	b.ReportAllocs()
+
 	q := NewQueueSll()
 
 	for i := 0; i < b.N; i++ {
@@ -280,6 +289,8 @@ func BenchmarkQueueSllPop(b *testing.B) {
 }
 
 func BenchmarkQueueSll10Cycles(b *testing.B) {
+	b.ReportAllocs()
+
 	const M = 10
 
 	q := NewQueueSll()
