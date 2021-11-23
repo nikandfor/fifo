@@ -26,7 +26,7 @@ func New[T any](n int) *FIFO[T] {
 }
 
 func (f *FIFO[T]) Push(el T) {
-	if f.b == nil {
+	if f.arr == nil {
 		f.arr = newArr((*arr[T])(nil))
 	}
 
